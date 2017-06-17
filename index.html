@@ -6,10 +6,9 @@
         <title></title>
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" type="text/css" href="css/YTInlineVideoPlayer.css" />
+        <link rel="stylesheet" type="text/css" href="css/YTiFramePlayerAPI.css" />
         <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
         <script>window.jQuery || document.write('<script src="https://code.jquery.com/jquery-3.2.1.min.js"><\/script>')</script>
-        <script src="js/YTInlineVideoPlayer.js"></script>
     </head>
     <body>
         <!--[if lte IE 9]>
@@ -18,11 +17,89 @@
 
         <button class="insertVideo" type="button">Insert Video</button>
 
-        <button class="playVideo" type="button">Play Video</button>
-        <button class="pauseVideo" type="button">Pause Video</button>
 
-        <div class="video-wrapper" data-yt-src="VjzJjwxz96Q">
-
+        <!-- Video Controls START -->
+        <div class="video-controls">
+            <button class="playVideo" type="button">Play</button>
+            <button class="pauseVideo" type="button">Pause</button>
+            <button class="stopVideo" type="button">Stop</button>
         </div>
+        <!-- Video Controls END -->
+
+        <!-- Video STARTS-->
+        <div class="video-container" data-yt-src="R51LMIAJtsc">
+            <!-- YouTube Video overwrites this div-->
+            <div id="video-player">
+
+            </div>
+        </div>
+        <!-- Video ENDS-->
+
+      <script>
+
+        // Global variables
+        var $currentYTVideoSrc = $('.video-container').data('yt-src');
+        var $insertVideo = $('button.insertVideo');
+        var $playVideo = $('button.playVideo');
+        var $pauseVideo = $('button.pauseVideo');
+        var $stopVideo = $('button.stopVideo');
+        var $videoControls = $('.video-controls');
+        var $videoContainer = $('.video-container');
+        var player = '';
+
+        // Loads the IFrame Player API code asynchronously.
+        var tag = document.createElement('script');
+
+        tag.src = "https://www.youtube.com/iframe_api";
+        var firstScriptTag = document.getElementsByTagName('script')[0];
+        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+        // Creates an <iframe> (and YouTube player) after the API code downloads.
+        var player;
+        function onYouTubeIframeAPIReady() {
+          player = new YT.Player('video-player', {
+            height: '390',
+            width: '640',
+            videoId: $currentYTVideoSrc,
+            events: {
+              'onReady': onPlayerReady
+            }
+          });
+        }
+
+        // API calls this function when the video player is ready
+        function onPlayerReady(event) {          
+           $insertVideo.css('display', 'block');                    
+        }
+       
+        // Play the video function
+        function playVideo() {
+          player.playVideo();
+        }
+
+        // Pause the video function
+        function pauseVideo() {
+          player.pauseVideo();
+        }
+
+        // Insert video click event
+        $insertVideo.on('click', function() {
+          $videoControls.css('display', 'block');  
+          $videoContainer.css('display', 'block');  
+          $(this).hide();
+        });
+
+        // Play video click event
+        $playVideo.on('click', function() {
+          playVideo(); 
+        });
+
+        // Pause video click event
+        $pauseVideo.on('click', function() {
+          pauseVideo(); 
+        });
+
+      </script>
+
     </body>
 </html>
